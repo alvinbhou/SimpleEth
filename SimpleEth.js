@@ -8,7 +8,7 @@
         *   default transaction options
         */
         var _options = {
-            from: '0xffb219f6781e7111f89f234c97807aae4255c59d',
+            // from: '0xffb219f6781e7111f89f234c97807aae4255c59d',
             to: '0xffb219f6781e7111f89f234c97807aae4255c59d',
             value: web3.toWei(0.1, 'ether'),
             gas: 21000,
@@ -20,6 +20,8 @@
         */
         for (var key in options) {
             if (options.hasOwnProperty(key) && _options.hasOwnProperty(key)) {
+                console.log(key);
+                console.log(options[key]);
                 /* value to ether */
                 if (key == 'value') {
                     _options[key] = web3.toWei(options[key], 'ether');
@@ -30,7 +32,10 @@
                 }
                 /* data to byte code */
                 else if (key == 'data') {
-                    _options[key] = _options[key] + options[key].split('').map(function (c) { return c.charCodeAt(0).toString(16); }).join("");
+                    _options[key] = _options[key] + ascii2byte(options[key]);
+                }
+                else{
+                    _options[key] = options[key];
                 }
             }
         }
@@ -38,9 +43,20 @@
         _options['gas'] = (_options['gas'] > 21000 + 68 * _options['data'].length) ? _options['gas'] : 21000 + 68 * _options['data'].length;
         self.each(function () {
             $(this).click(function () {
+                if(options['$value']){
+                    var reg_number = /^\d+$/;
+                    var $val = options['$value'].val();
+                    if(reg_number.test($val)){
+                        _options['value'] =  web3.toWei($val, 'ether');
+                    }
+                }
+                if(options['$data']){
+                    _options['data'] = ascii2byte(options['$data'].val());
+                }
                 console.log(_options);
                 metamaskLoginStatus(function (status) {
                     if (status.login) {
+                        _options['from'] = status.accounts[0];
                         web3.eth.sendTransaction(_options, function (error, result) {
                             console.log({ 'TxHash': result });
                         });
@@ -62,7 +78,7 @@
 const metamaskLoginStatus = function(callback){
     web3.eth.getAccounts(function(err, accounts){
         if (err != null){
-            console.error("An error occurred: "+err);
+            console.error("An error occurred: " + err);
             callback({login: false});
         } 
         else if (accounts.length == 0){
@@ -73,4 +89,8 @@ const metamaskLoginStatus = function(callback){
             callback({login: true, accounts:accounts});
         }}
     );
+}
+
+const ascii2byte = function(str){
+    return str.split('').map(function (c) { return c.charCodeAt(0).toString(16); }).join("");
 }

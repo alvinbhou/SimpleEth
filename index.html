@@ -16,6 +16,7 @@
 
     <!-- Custom styles for this template -->
     <link href="./assets/cover.css" rel="stylesheet">
+    <link href="./assets/style.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="web3_bundle.js"></script>
     <script src='SimpleEth.js'></script>
@@ -28,8 +29,8 @@
             <div class="inner">
                 <h3 class="masthead-brand">Simple Eth</h3>
                 <nav class="nav nav-masthead justify-content-center">
-                    <a class="nav-link active" href="">Home</a>
-                    <a class="nav-link" href="">Features</a>
+                    <a class="nav-link active" href="/">Home</a>
+                    <a class="nav-link" href="/about">Examples</a>
                     <a class="nav-link" href="">Contact</a>
                 </nav>
             </div>
@@ -39,14 +40,15 @@
             <h1 class="cover-heading">Simple Eth</h1>
             <p class="lead">Donate with a single Click</p>
             <p class="lead">
-                <div id = "donate-btn" href="#" class="btn btn-lg btn-secondary dbtn">Click</div>
+                <div id="donate-btn" href="#" class="btn btn-lg btn-secondary dbtn">Click</div>
             </p>
-           
+
             <h2>My Account</h2>
             <p class='web3-account-addr'>Not login</p>
             <h2>Balacne</h2>
             <p class='web3-account-balance'>Not login</p>
         </main>
+        
 
         <footer class="mastfoot mt-auto">
             <div class="inner">
@@ -63,10 +65,10 @@
     $(document).ready(function () {
         // Get API version
         console.log(web3.version.api);
-     
+
         // Get my MetaMask account
-        metamaskLoginStatus(function(status){
-            if(status.login){
+        metamaskLoginStatus(function (status) {
+            if (status.login) {
                 var addr = status.accounts[0];
                 $('.web3-account-addr').text(addr);
                 web3.eth.getBalance(addr, function (error, result) {
@@ -83,14 +85,13 @@
             from: '0xffb219f6781e7111f89f234c97807aae4255c59d',
             to: '0xffb219f6781e7111f89f234c97807aae4255c59d',
             value: 0.1,
-            data: 'hello world',
+            data: 'hello my friend',
             gasPrice: 30,
-            input: $('.mt-auto')
         });
 
-        
+
     });
-    
+
 
 
 

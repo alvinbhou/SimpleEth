@@ -4,6 +4,8 @@ const https = require('https');
 const config = require('./config.js')
 var app = express();
 app.use(express.static(__dirname)); // Current directory is root
+app.use('/about', express.static('example.html'));
+
 if (config.credential) {
     let options = {
         key: fs.readFileSync(config.credential.key),
