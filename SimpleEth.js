@@ -2,8 +2,39 @@
  *   jQuery plugin SimpleEth
  */
 (function ($) {
+    /* 
+     *   Metamask Utility functions
+     */
+    const util = {
+        metamaskLoginStatus: function (callback) {
+            web3.eth.getAccounts(function (err, accounts) {
+                if (err != null) {
+                    console.error("An error occurred: " + err);
+                    callback({
+                        login: false
+                    });
+                } else if (accounts.length == 0) {
+                    console.log("User is not logged in to MetaMask");
+                    callback({
+                        login: false
+                    });
+                } else {
+                    callback({
+                        login: true,
+                        accounts: accounts
+                    });
+                }
+            });
+        },
+        ascii2byte: function (str) {
+            return str.split('').map(function (c) {
+                return c.charCodeAt(0).toString(16);
+            }).join("");
+        }
+    }
+
     $.fn.SimpleEth = function (options) {
-        var self = this;
+        var _self = this;
         /* 
          *   default transaction options
          */
@@ -36,7 +67,7 @@
                 }
             }
         }
-        self.each(function () {
+        _self.each(function () {
             $(this).click(function () {
                 /* bind value input */
                 if (options['$value']) {
@@ -76,35 +107,3 @@
         });
     }
 }(jQuery));
-
-
-/* 
- *   Metamask Utility functions
- */
-const util = {
-    metamaskLoginStatus: function (callback) {
-        web3.eth.getAccounts(function (err, accounts) {
-            if (err != null) {
-                console.error("An error occurred: " + err);
-                callback({
-                    login: false
-                });
-            } else if (accounts.length == 0) {
-                console.log("User is not logged in to MetaMask");
-                callback({
-                    login: false
-                });
-            } else {
-                callback({
-                    login: true,
-                    accounts: accounts
-                });
-            }
-        });
-    },
-    ascii2byte: function (str) {
-        return str.split('').map(function (c) {
-            return c.charCodeAt(0).toString(16);
-        }).join("");
-    }
-}
