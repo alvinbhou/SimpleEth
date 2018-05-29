@@ -1,5 +1,6 @@
 /* 
  *   jQuery plugin SimpleEth
+ *   @author CryoliteZ
  */
 (function ($) {
     /* 
@@ -33,23 +34,24 @@
         }
     }
 
-    $.fn.SimpleEth = function (options) {
-        var _self = this;
+    $.fn.SimpleEth = function (options, _callback = null) {
+        const _self = this;
         /* 
          *   default transaction options
          */
-        var _options = {
+        let _options = {
             to: '0xffb219f6781e7111f89f234c97807aae4255c59d',
-            value: web3.toWei(0.1, 'ether'),
+            value: web3.toWei(0, 'ether'),
             gas: 21000,
             gasPrice: web3.toWei(20, 'gwei'),
-            data: '0x',
+            data: '',
+            callback: null
         };
 
         /*
          *   user defined options
          */
-        for (var key in options) {
+        for (let key in options) {
             if (options.hasOwnProperty(key) && _options.hasOwnProperty(key)) {
                 /* value to ether */
                 if (key == 'value') {
@@ -71,10 +73,9 @@
             $(this).click(function () {
                 /* bind value input */
                 if (options['$value']) {
-                    var reg_number = /^[+-]?\d+(\.\d+)?$/;
-                    var $val = options['$value'].val();
+                    let reg_number = /^[+-]?\d+(\.\d+)?$/;
+                    let $val = options['$value'].val();
                     if (reg_number.test($val)) {
-                        console.log($val);
                         _options['value'] = web3.toWei($val, 'ether');
                     }
                 }
@@ -83,7 +84,7 @@
                     _options['data'] = util.ascii2byte(options['$data'].val());
                 }
                 /* prevent intrinsic gas too low */
-                _options['gas'] = (_options['gas'] > 21000 + 68 * _options['data'].length) ? _options['gas'] : 21000 + 68 * _options['data'].length;
+                _options['gas'] = (_options['gas'] > 21000 + 68 * (_options['data'].length-2)) ? _options['gas'] : 21000 + 68 * (_options['data'].length-2);
                 util.metamaskLoginStatus(function (status) {
                     if (status.login) {
                         /* get "from" address */
@@ -92,13 +93,19 @@
                         } else {
                             _options['from'] = status.accounts[0];
                         }
-                        console.log(_options);
                         web3.eth.sendTransaction(_options, function (error, result) {
-                            console.log({
-                                'TxHash': result
-                            });
+                            console.log({options: _options, TxHash: result, err: error, login: true});
+                            if(_callback){
+                                _callback({options: _options, TxHash: result, err: error, login: true});
+                            }
+                            else{
+                                console.log({'TxHash': result})
+                            }
                         });
                     } else {
+                        if(_options.callback){
+                            _callback({options: _options, login: false});
+                        }
                         console.log("Cannot send transaction");
                     }
                 })
