@@ -9,7 +9,7 @@ $('.eth-btn').SimpleEth(options, callback);
 ```
 
 ## Options
-| Parameter |  Default  | Type| 
+| Option |  Default  | Type| 
 |-----  | -------|  -------|  
 |from   |  Metamask Wallet Address  | String |
 |to     |  0xffb219f6781...    | String
@@ -19,6 +19,15 @@ $('.eth-btn').SimpleEth(options, callback);
 |data   |  ""  | String |
 |$value   |  null | jQuery Obj.|
 |$data   |  null | jQuery Obj.|
+
+### Callback values
+| Value |  Description  | Type| 
+|-----  | -------|  -------|  
+|TxHash   |  Transaction ID  | String |
+|login     |  Metamask login status    | Boolean
+|err  |  Error message | String |
+|options    |  Options used for transaction  | Object|
+
 
 ## Example
 
