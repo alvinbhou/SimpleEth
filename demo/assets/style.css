@@ -1,0 +1,23 @@
+.flex-box{
+    display: flex;
+}
+
+.input-eth-amount{
+    margin: 0 3%;
+    width: 150px;
+}
+
+code{
+    white-space  : pre;
+    text-align: left;
+    color: white;
+}
+
+.tl {
+    text-align: left;
+}
+
+/* .dbtn{
+    color: #FF6F00;
+} */
+

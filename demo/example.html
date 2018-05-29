@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="">
+
+    <title>Simple Eth</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="./assets/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="./assets/cover.css" rel="stylesheet">
+    <link href="./assets/style.css" rel="stylesheet">
+    <link href="./assets/toast.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src='SimpleEth.min.js'></script>
+</head>
+
+<body class="text-center">
+
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+        <header class="masthead mb-auto">
+            <div class="inner">
+                <h3 class="masthead-brand">Simple Eth</h3>
+                <nav class="nav nav-masthead justify-content-center">
+                    <a class="nav-link" href="/">Home</a>
+                    <a class="nav-link active" href="">Examples</a>
+                    <a class="nav-link" href="https://github.com/CryoliteZ/SimpleEth">Github</a>
+                </nav>
+            </div>
+        </header>
+
+       
+        <div class="">
+            <h2>Examples</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Type</th>
+                        <th scope="col">Example</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">
+                            <div class="flex-box">
+                                <div id="donate-btn" href="#" class="btn btn-secondary dbtn">Default</div>
+                            </div>
+
+
+                        </th>
+                        <td class="tl">
+<code>$('#donate-btn').SimpleEth({
+    from: '0x',
+    to: '0x',
+    value: 0,
+    gas: 21000,
+    gasPrice: 20,
+    data: 'Hi there!',
+}, mycallback);
+</code> 
+                                </td>
+                            </tr>
+                    <tr>
+                        <th scope="row">
+                            <div class="flex-box">
+                                <div id="donate-amount-btn" href="#" class="btn btn-secondary dbtn">Custom Amount</div>
+                                <input id="donate-amount" type="text" class="form-control input-eth-amount" placeholder="Enter value">
+                            </div>
+                        </th>
+                        <td class="tl">
+                            
+<code>$('#donate-amount-btn').SimpleEth({
+    from: '0x',
+    to: '0x',
+    $value: $('#donate-amount')
+});
+</code> 
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+
+                            <div class="flex-box">
+                                <div id="donate-mssg-btn" href="#" class="btn btn-secondary">Custom Message</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Transaction Message</label>
+                                <textarea id="donate-mssg" class="form-control" placeholder="Hello world!" rows="3"></textarea>
+                            </div>
+                        </th>
+                        <td class="tl">
+<code>$('#donate-mssg-btn').SimpleEth({
+    to: '0x',
+    value: 0.66,
+    $data: $('#donate-mssg')
+});
+</code> 
+
+                        </td>
+
+                    </tr>
+                   
+                </tbody>
+            </table>
+        </div>
+
+        <footer class="mastfoot mt-auto">
+            <div class="inner">
+                CryoliteZ
+            </div>
+        </footer>
+        <div id="toast">Etherscan: <span><a> </a></span></div>
+    </div>
+
+
+</body>
+
+</html>
+<script>
+    $(document).ready(function () {
+
+        let mycallback = function(data){
+            let $toast =  $('#toast');
+            $toast.find('a').text(data.TxHash.substring(0,10) + '...');
+            let etherScanBaseUrl;
+            if(web3.version.network == '1'){
+                etherScanBaseUrl = 'https://etherscan.io/tx/';
+            }
+            else if(web3.version.network == '3'){
+                etherScanBaseUrl = 'https://ropsten.etherscan.io/tx/';
+            }
+            $toast.find('a').attr('href', etherScanBaseUrl + data.TxHash)
+            $toast.addClass('show');
+            setTimeout(function () {
+                $toast.removeClass('show');
+            }, 5000);
+        }
+
+        $('#donate-btn').SimpleEth({
+            from: '0xffb219f6781e7111f89f234c97807aae4255c59d',
+            to: '0xffb219f6781e7111f89f234c97807aae4255c59d',
+            value: 0,
+            gas: 21000,
+            gasPrice: 20,
+            data: 'Hi there!',
+        },mycallback);
+
+        $('#donate-amount-btn').SimpleEth({
+            to: '0xffb219f6781e7111f89f234c97807aae4255c59d',
+            $value: $('#donate-amount')
+        });
+
+        $('#donate-mssg-btn').SimpleEth({
+            to: '0xffb219f6781e7111f89f234c97807aae4255c59d',
+            value: 0.66,
+            $data: $('#donate-mssg')
+        });
+
+
+    });
+</script>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="">
+
+    <title>Simple Eth</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="./assets/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="./assets/cover.css" rel="stylesheet">
+    <link href="./assets/style.css" rel="stylesheet">
+    <link href="./assets/toast.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <!-- <script src="web3_bundle.js"></script> -->
+    <script src='SimpleEth.min.js'></script>
+</head>
+
+<body class="text-center">
+
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+        <header class="masthead mb-auto">
+            <div class="inner">
+                <h3 class="masthead-brand">Simple Eth</h3>
+                <nav class="nav nav-masthead justify-content-center">
+                    <a class="nav-link active" href="/">Home</a>
+                    <a class="nav-link" href="/about">Examples</a>
+                    <a class="nav-link" href="https://github.com/CryoliteZ/SimpleEth">Github</a>
+                </nav>
+            </div>
+        </header>
+
+        <main role="main" class="inner cover">
+            <h1 class="cover-heading">Simple Eth</h1>
+            <p class="lead">Donate with a single Click</p>  
+            <p class="lead">
+                <div id="donate-btn" href="#" class="btn btn-lg btn-secondary dbtn">Click</div>
+            </p>
+
+            <h2>My Account</h2>
+            <p class='web3-account-addr'>Metamask not login</p>
+            <h2>Balacne</h2>
+            <p class='web3-account-balance'>Metamask not login</p>
+        </main>
+        
+
+        <footer class="mastfoot mt-auto">
+            <div class="inner">
+                CryoliteZ
+            </div>
+        </footer>
+        <div id="toast">Etherscan: <span><a> </a></span></div>
+    </div>
+
+
+</body>
+
+</html>
+
+<script>
+    $(document).ready(function () {
+        // Get API version
+        console.log(web3.version.api);
+        
+        var metamaskLoginStatus =  function(callback){
+            web3.eth.getAccounts(function (err, accounts) {
+                if (err != null) {
+                    console.error("An error occurred: " + err);
+                    callback({
+                        login: false
+                    });
+                } else if (accounts.length == 0) {
+                    console.log("User is not logged in to MetaMask");
+                    callback({
+                        login: false
+                    });
+                } else {
+                    callback({
+                        login: true,
+                        accounts: accounts
+                    });
+                }
+            });
+        }
+
+        // Get my MetaMask account
+        var updateUserStatus = function(){
+                metamaskLoginStatus(function (status) {
+                    if (status.login) {
+                        var addr = status.accounts[0];
+                        $('.web3-account-addr').text(addr);
+                        web3.eth.getBalance(addr, function (error, result) {
+                            if (!error) {
+                                var balance = result['c'][0] / 1e4 + result['c'][1] / 1e18;
+                                balance = balance ? balance : 0
+                                $('.web3-account-balance').text(balance);
+                                // console.log({addr:addr,balance: balance});
+                            }
+                        })
+                    }
+                });
+            }
+        updateUserStatus();
+        setInterval(updateUserStatus, 5000);
+        let mycallback = function(data){
+            let $toast =  $('#toast');
+            $toast.find('a').text(data.TxHash.substring(0,10) + '...');
+            let etherScanBaseUrl;
+            if(web3.version.network == '1'){
+                etherScanBaseUrl = 'https://etherscan.io/tx/';
+            }
+            else if(web3.version.network == '3'){
+                etherScanBaseUrl = 'https://ropsten.etherscan.io/tx/';
+            }
+            $toast.find('a').attr('href', etherScanBaseUrl + data.TxHash)
+            $toast.addClass('show');
+            setTimeout(function () {
+                $toast.removeClass('show');
+            }, 5000);
+        }
+
+        $('#donate-btn').SimpleEth({
+            to: '0xffb219f6781e7111f89f234c97807aae4255c59d',
+            value: 0.1,
+            data: 'hello my friend',
+            gasPrice: 30, 
+        }, mycallback);
+        
+        
+
+
+    });
+
+
+
+
+
+</script>
