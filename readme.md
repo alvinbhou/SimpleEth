@@ -1,7 +1,7 @@
 # SimpleEth
 > A simple Simple jQuery plugin for sending Ethereum with Metamask
 
-[Demo Website](https://cryolite.com.tw/)
+[Demo Website](http://simple-eth.cryolite.nctu.me)
 
 ## Usage
 ```
